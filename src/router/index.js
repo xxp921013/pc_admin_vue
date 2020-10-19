@@ -19,6 +19,7 @@ const ArticleList = () => import('../components/article/ArticleList')
 const RoundsList = () => import('../components/round/RoundsList')
 const MenuList = () => import('../components/system/MenuList')
 const Log = () => import('../components/system/Log')
+const TagList = () => import('../components/article/TagList')
 Vue.use(VueRouter)
 
 const routes = [
@@ -71,6 +72,11 @@ const routes = [
                 path: '/log',
                 component: Log,
                 name: '操作日志'
+            },
+            {
+                path: '/tags',
+                component: TagList,
+                name: '标签列表'
             },
             {
                 path: '/rights',
