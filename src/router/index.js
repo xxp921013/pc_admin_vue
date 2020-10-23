@@ -20,6 +20,7 @@ const RoundsList = () => import('../components/round/RoundsList')
 const MenuList = () => import('../components/system/MenuList')
 const Log = () => import('../components/system/Log')
 const TagList = () => import('../components/article/TagList')
+const HotTag = () => import('../components/hot/HotTag')
 Vue.use(VueRouter)
 
 const routes = [
@@ -79,9 +80,9 @@ const routes = [
                 name: '标签列表'
             },
             {
-                path: '/rights',
-                component: Rights,
-                name: '权限列表'
+                path: '/hotTags',
+                component: HotTag,
+                name: '热门标签'
             },
             {
                 path: '/roles',

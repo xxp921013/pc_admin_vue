@@ -11,14 +11,13 @@
                     </div>
                 </el-col>
                 <el-col :span="6">
-                    <el-button type="primary" @click="addDialogVisible = true">添加用户</el-button>
+                    <el-button type="primary" @click="addDialogVisible = true">添加标签</el-button>
                 </el-col>
             </el-row>
             <el-table
                     :data="tags"
                     border
                     style="width: 100%;height: 100%"
-                    @selection-change="handleSelectionChange"
                     class="user-table"
             >
 
@@ -55,17 +54,6 @@
                     </template>
                 </el-table-column>
             </el-table>
-            <div class="block">
-                <el-pagination
-                        @size-change="handleSizeChange"
-                        @current-change="handleCurrentChange"
-                        :current-page="queryInfo.page"
-                        :page-sizes="[10, 20, 50, 100]"
-                        :page-size="queryInfo.pageSize"
-                        layout="total, sizes, prev, pager, next, jumper"
-                        :total="total">
-                </el-pagination>
-            </div>
         </el-card>
         <el-dialog
                 title="修改权重"
@@ -83,14 +71,13 @@
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="editDialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="pushMenu">确 定</el-button>
+                <el-button type="primary" @click="pushEdit">确 定</el-button>
             </span>
         </el-dialog>
         <el-dialog
                 title="添加标签"
                 :visible.sync="addDialogVisible"
                 width="30%"
-                :before-close="handleClose"
         >
             <el-form ref="form" :model="form" label-width="80px">
                 <el-form-item label="标签名称" prop="name">
@@ -124,16 +111,6 @@
                 form: {
                     name: '',
                     weight: 0,
-                },
-                rules: {
-                    username: [
-                        {required: true, message: '请输入用户名', trigger: 'blur'},
-                        {min: 5, max: 13, message: '长度在 5 到 13 个字符', trigger: 'blur'}
-                    ],
-                    password: [
-                        {required: true, message: '请输入密码', trigger: 'blur'},
-                        {min: 5, max: 13, message: '长度在 5 到 13 个字符', trigger: 'blur'}
-                    ]
                 },
                 currentTag: {
                     id: 0,
@@ -199,24 +176,40 @@
                 this.editDialogVisible = true;
             },
             addTag() {
-                this.$refs['form'].validate((async valid => {
-                    if (valid) {
-                        this.$http.post('/admin/article/addTag', this.form).then(res => {
-                            console.log(res);
-                            const data = res.data;
-                            if (data.code == 200) {
-                                this.addDialogVisible = false;
-                                this.$message({
-                                    message: '添加成功',
-                                    type: "success"
-                                })
-                                this.getTags();
-                            } else {
-                                this.$message.error('数据错误');
-                            }
+
+                this.$http.post('/admin/article/addTag', this.form).then(res => {
+                    console.log(res);
+                    const data = res.data;
+                    if (data.code == 200) {
+                        this.addDialogVisible = false;
+                        this.$message({
+                            message: '添加成功',
+                            type: "success"
                         })
+                        this.getTags();
+                    } else {
+                        this.$message.error('数据错误');
                     }
-                }))
+                })
+
+            },
+            pushEdit() {
+                console.log(this.currentTag);
+                this.$http.put('/admin/article/editTag', this.currentTag).then(res => {
+                    console.log(res);
+                    const data = res.data;
+                    if (data.code == 200) {
+                        this.$message({
+                            message: '修改成功!',
+                            type: "success"
+                        })
+                        this.getTags();
+                        this.editDialogVisible = false;
+                    } else {
+                        this.$message.error('数据错误');
+                    }
+                })
+
             }
         }
     }
