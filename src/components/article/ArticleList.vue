@@ -90,6 +90,10 @@
                             <el-button type="primary" size="small" icon="el-icon-s-order"
                                        @click="viewArticle(scope.row)"></el-button>
                         </el-tooltip>
+                        <el-tooltip class="item" effect="dark" content="添加权重" placement="top-start">
+                            <el-button type="success" size="small" icon="el-icon-s-data"
+                                       @click="weightArticle(scope.row.id)"></el-button>
+                        </el-tooltip>
                         <el-tooltip class="item" effect="dark" content="删除文章" placement="top-start">
                             <el-button type="danger" size="small" icon="el-icon-delete"
                                        @click="deleteArticle(scope.row.id)"></el-button>
@@ -251,6 +255,45 @@
                 this.dialogVisible = true;
             },
             deleteArticle(id) {
+                this.$confirm('是否永久删除文章?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'info'
+                }).then(() => {
+                    this.$http.delete('/admin/article/deleteArticle/' + id).then(res => {
+                        if (res.data.code == 200) {
+                            this.$message.success('删除成功!');
+                            this.getArticles();
+                        } else {
+                            this.$message.error(res.data.message);
+                        }
+                    })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消操作'
+                    });
+                });
+            },
+            weightArticle(id) {
+                this.$confirm('是否添加文章权重信息', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'info'
+                }).then(() => {
+                    this.$http.post('/admin/hot/addWeight/' + id).then(res => {
+                        if (res.data.code == 200) {
+                            this.$message.success('添加成功,请到权重菜单做相关操作');
+                        } else {
+                            this.$message.error(res.data.message);
+                        }
+                    })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消操作'
+                    });
+                });
             }
         }
     }

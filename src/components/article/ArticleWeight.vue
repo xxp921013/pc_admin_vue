@@ -4,18 +4,15 @@
             <el-row :gutter="20">
                 <el-col :span="6">
                     <div>
-                        <el-input placeholder="根据标签名搜索标签" v-model="queryInfo.query" class="input-with-select"
-                                  clearable @clear="getTags" @keydown.enter.native="getTags">
-                            <el-button slot="append" icon="el-icon-search" @click="getTags"></el-button>
+                        <el-input placeholder="根据标签名搜索文章" v-model="queryInfo.query" class="input-with-select"
+                                  clearable @clear="getWeights" @keydown.enter.native="getWeights">
+                            <el-button slot="append" icon="el-icon-search" @click="getWeights"></el-button>
                         </el-input>
                     </div>
                 </el-col>
-                <el-col :span="6">
-                    <el-button type="primary" @click="addDialogVisible = true">添加标签</el-button>
-                </el-col>
             </el-row>
             <el-table
-                    :data="tags"
+                    :data="weights"
                     border
                     style="width: 100%;height: 100%"
                     class="user-table"
@@ -26,15 +23,15 @@
                 >
                 </el-table-column>
                 <el-table-column
-                        prop="name"
-                        label="标签名"
+                        prop="tittle"
+                        label="文章标题"
                         align="center"
                         sortable
                 >
                 </el-table-column>
                 <el-table-column
-                        prop="weight"
-                        label="权重(影响热门标签排名)"
+                        prop="weights"
+                        label="权重(影响热门文章排名)"
                         align="center"
                 >
                 </el-table-column>
@@ -47,49 +44,41 @@
                             <el-button type="success" size="small" icon="el-icon-setting"
                                        @click="editWeight(scope.row)"></el-button>
                         </el-tooltip>
-                        <el-tooltip class="item" effect="dark" content="删除标签" placement="top-start">
+                        <el-tooltip class="item" effect="dark" content="删除文章权重" placement="top-start">
                             <el-button type="danger" size="small" icon="el-icon-delete"
-                                       @click="deleteTag(scope.row.id)"></el-button>
+                                       @click="deleteWeight(scope.row.articleId)"></el-button>
                         </el-tooltip>
                     </template>
                 </el-table-column>
             </el-table>
+            <div class="block">
+                <el-pagination
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :current-page="queryInfo.page"
+                        :page-sizes="[10, 20, 50, 100]"
+                        :page-size="queryInfo.pageSize"
+                        layout="total, sizes, prev, pager, next, jumper"
+                        :total="total">
+                </el-pagination>
+            </div>
         </el-card>
         <el-dialog
                 title="修改权重"
                 :visible.sync="editDialogVisible"
                 width="20%"
-                :before-close="handleClose"
         >
-            <el-form ref="editForm" :model="currentTag" label-width="80px">
+            <el-form ref="editForm" :model="currentWeight" label-width="80px">
                 <el-form-item label="标签名称" prop="name">
-                    <el-input prefix-icon="el-icon-user" v-model="currentTag.name" :disabled="true"></el-input>
+                    <el-input prefix-icon="el-icon-user" v-model="currentWeight.tittle" :disabled="true"></el-input>
                 </el-form-item>
                 <el-form-item label="权重" prop="weight">
-                    <el-input prefix-icon="el-icon-user" v-model="currentTag.weight"></el-input>
+                    <el-input prefix-icon="el-icon-user" v-model="currentWeight.weights"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="editDialogVisible = false">取 消</el-button>
                 <el-button type="primary" @click="pushEdit">确 定</el-button>
-            </span>
-        </el-dialog>
-        <el-dialog
-                title="添加标签"
-                :visible.sync="addDialogVisible"
-                width="30%"
-        >
-            <el-form ref="form" :model="form" label-width="80px">
-                <el-form-item label="标签名称" prop="name">
-                    <el-input prefix-icon="el-icon-user" v-model="form.name"></el-input>
-                </el-form-item>
-                <el-form-item label="权重" prop="weight">
-                    <el-input prefix-icon="el-icon-user" v-model="form.weight"></el-input>
-                </el-form-item>
-            </el-form>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="addDialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="addTag">确 定</el-button>
             </span>
         </el-dialog>
     </div>
@@ -100,22 +89,17 @@
         name: "TagList",
         data() {
             return {
-                tags: [],
+                weights: [],
                 editDialogVisible: false,
-                addDialogVisible: false,
                 queryInfo: {
                     query: '',
                     page: 1,
                     pageSize: 10
                 },
-                form: {
-                    name: '',
-                    weight: 0,
-                },
-                currentTag: {
+                currentWeight: {
                     id: 0,
-                    name: '',
-                    weight: 0
+                    tittle: '',
+                    weights: 0
                 },
                 roles: [],
                 selectedId: '',
@@ -123,11 +107,11 @@
             }
         },
         created() {
-            this.getTags();
+            this.getWeights();
         },
         methods: {
-            getTags() {
-                this.$http.get('/admin/article/tagList', {params: this.queryInfo}).then(res => {
+            getWeights() {
+                this.$http.get('/admin/hot/articleWeight', {params: this.queryInfo}).then(res => {
                     console.log(res);
                     if (res.data.code == 500) {
                         this.$message({
@@ -135,19 +119,19 @@
                             type: 'warning'
                         })
                     }
-                    this.tags = res.data.data;
+                    this.weights = res.data.data;
                     this.total = res.data.total;
                 })
             },
-            deleteTag(id) {
-                this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+            deleteWeight(id) {
+                this.$confirm('此操作将永久删除该权重信息, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.$http.delete('/admin/adminUser/deleteTag/' + id).then(res => {
+                    this.$http.delete('/admin/hot/deleteWeight/' + id).then(res => {
                         this.$message.success('删除成功!');
-                        this.getTags();
+                        this.getWeights();
                     })
                 }).catch(() => {
                     this.$message({
@@ -164,38 +148,21 @@
             },
             handleSizeChange(val) {
                 this.queryInfo.pageSize = val
-                this.getTags();
+                this.getWeights();
             },
             handleCurrentChange(val) {
                 this.queryInfo.page = val;
-                this.getTags();
+                this.getWeights();
             },
 
-            editWeight(tag) {
-                this.currentTag = tag;
+            editWeight(weight) {
+                this.currentWeight = weight;
                 this.editDialogVisible = true;
             },
-            addTag() {
-
-                this.$http.post('/admin/article/addTag', this.form).then(res => {
-                    console.log(res);
-                    const data = res.data;
-                    if (data.code == 200) {
-                        this.addDialogVisible = false;
-                        this.$message({
-                            message: '添加成功',
-                            type: "success"
-                        })
-                        this.getTags();
-                    } else {
-                        this.$message.error('数据错误');
-                    }
-                })
-
-            },
             pushEdit() {
-                console.log(this.currentTag);
-                this.$http.put('/admin/article/editTag', this.currentTag).then(res => {
+                console.log(this.currentWeight);
+                this.$http.put('/admin/hot/editArticleWeight', this.currentWeight).then(res => {
+                    console.log(this.currentWeight);
                     console.log(res);
                     const data = res.data;
                     if (data.code == 200) {
@@ -203,7 +170,7 @@
                             message: '修改成功!',
                             type: "success"
                         })
-                        this.getTags();
+                        this.getWeights();
                         this.editDialogVisible = false;
                     } else {
                         this.$message.error('数据错误');

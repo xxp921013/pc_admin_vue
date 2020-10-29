@@ -21,6 +21,9 @@ const MenuList = () => import('../components/system/MenuList')
 const Log = () => import('../components/system/Log')
 const TagList = () => import('../components/article/TagList')
 const HotTag = () => import('../components/hot/HotTag')
+const ArticleWeight = () => import('../components/article/ArticleWeight')
+const HotArticle = () => import('../components/hot/HotArticle')
+const DailyLog = () => import('../components/system/DailyLog')
 Vue.use(VueRouter)
 
 const routes = [
@@ -85,19 +88,24 @@ const routes = [
                 name: '热门标签'
             },
             {
+                path: '/articleWeight',
+                component: ArticleWeight,
+                name: '文章权重'
+            },
+            {
                 path: '/roles',
                 component: Roles,
                 name: '角色列表'
             },
             {
-                path: '/categories',
-                component: Categories,
-                name: '商品分类'
+                path: '/dailyLog',
+                component: DailyLog,
+                name: '日常数据'
             },
             {
-                path: '/params',
-                component: Params,
-                name: '分类参数'
+                path: '/hotArticle',
+                component: HotArticle,
+                name: '热门文章'
             },
             {
                 path: '/goods',
