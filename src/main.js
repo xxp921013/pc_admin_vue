@@ -21,7 +21,8 @@ Vue.prototype.putRequest = putRequest;
 Vue.prototype.deleteRequest = deleteRequest;
 Vue.prototype.getRequest = getRequest;
 Vue.prototype.$http = axios
-axios.defaults.baseURL = 'http://localhost:8082/'
+axios.defaults.baseURL = 'http://153g21o285.51mypc.cn:16795/'
+// axios.defaults.baseURL = 'http://192.168.3.2:8082/'
 axios.interceptors.request.use(config => {
     config.headers.Authentication = window.sessionStorage.getItem('token');
     return config

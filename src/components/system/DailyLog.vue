@@ -11,7 +11,7 @@
                     </div>
                 </el-col>
             </el-row>
-            <el-tabs v-model="activeName">
+            <el-tabs v-model="activeName" @tab-click="handleClick">
                 <el-tab-pane label="当日数据" name="first">
 
                     <br/>
@@ -98,6 +98,13 @@
                         </el-pagination>
                     </div>
                 </el-tab-pane>
+                <el-tab-pane label="当前登录用户" name="third">
+                    <br/>
+                    <el-badge :value="loginUserSize" class="item">
+                        <el-button type="success" style="width: 120px" size="small">当前登陆用户数</el-button>
+                    </el-badge>
+                </el-tab-pane>
+
             </el-tabs>
 
         </el-card>
@@ -125,7 +132,8 @@
                     article: 0,
                     articleRead: 0,
                     round: 0
-                }
+                },
+                loginUserSize: 0
             }
         },
         created() {
@@ -138,6 +146,8 @@
             },
 
             getLogs() {
+                console.log("获取历史")
+
                 this.$http.get('/admin/daily/list', {params: this.queryInfo}).then(res => {
                     console.log(res);
                     if (res.data.code == 500) {
@@ -161,7 +171,7 @@
             },
             getToday() {
                 this.$http.get('/admin/daily/today').then(res => {
-                    console.log(res);
+                    console.log("获取当天")
                     if (res.data.code == 500) {
                         this.$message({
                             message: '登录超时,请重新登录!',
@@ -170,6 +180,30 @@
                     }
                     this.today = res.data.data;
                 })
+            },
+            getLoginUser() {
+                console.log("获取登录用户")
+
+                this.$http.get('/admin/daily/loginUser').then(res => {
+                    console.log(res);
+                    if (res.data.code == 500) {
+                        this.$message({
+                            message: '登录超时,请重新登录!',
+                            type: 'warning'
+                        })
+                    }
+                    this.loginUserSize = res.data.data;
+                })
+            },
+            handleClick(tab, event) {
+                let tabName = tab.name;
+                if ("first" == tabName) {
+                    this.getToday()
+                } else if ("second" == tabName) {
+                    this.getLogs()
+                } else {
+                    this.getLoginUser()
+                }
             }
         }
     }
