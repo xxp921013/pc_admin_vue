@@ -8,11 +8,17 @@
 <script>
     export default {
         name: "Welcome",
+        data() {
+            return {
+                websock: null,
+            }
+        },
         methods: {
             goDetail() {
                 this.$router.push('/12123123/userDetail')
-            }
-        }
+            },
+        },
+
     }
 </script>
 

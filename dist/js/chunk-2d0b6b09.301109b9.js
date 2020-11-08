@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0b6b09"],{"1ddd":function(e,t,n){"use strict";n.r(t);var o=function(){var e=this,t=e.$createElement,n=e._self._c||t;return n("div",[n("h3",[e._v("欢迎访问管理后台")]),n("el-button",{attrs:{slot:"append",icon:"el-icon-search"},on:{click:e.goDetail},slot:"append"})],1)},c=[],l={name:"Welcome",methods:{goDetail:function(){this.$router.push("/12123123/userDetail")}}},s=l,a=n("2877"),i=Object(a["a"])(s,o,c,!1,null,"33eebec3",null);t["default"]=i.exports}}]);
+//# sourceMappingURL=chunk-2d0b6b09.301109b9.js.map
