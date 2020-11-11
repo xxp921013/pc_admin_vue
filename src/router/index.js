@@ -24,6 +24,7 @@ const HotTag = () => import('../components/hot/HotTag')
 const ArticleWeight = () => import('../components/article/ArticleWeight')
 const HotArticle = () => import('../components/hot/HotArticle')
 const DailyLog = () => import('../components/system/DailyLog')
+const Map = () => import('../components/other/Map')
 Vue.use(VueRouter)
 
 const routes = [
@@ -123,9 +124,9 @@ const routes = [
                 name: '数据报表'
             },
             {
-                path: '/:id/userDetail',
-                component: UserDetail,
-                name: '用户详情'
+                path: '/map',
+                component: Map,
+                name: '地图'
             }
         ]
     }

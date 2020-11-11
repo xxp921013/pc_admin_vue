@@ -13,6 +13,8 @@ import {deleteRequest} from "./utils/api";
 import {getRequest} from "./utils/api";
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
+import BaiduMap from 'vue-baidu-map'
+
 // use
 Vue.use(mavonEditor)
 Vue.prototype.postRequest = postRequest;
@@ -39,6 +41,10 @@ Vue.filter('dataFormat', function (originval) {
     const mm = (dt.getMinutes() + '').padStart(2, '0');
     const ss = (dt.getSeconds() + '').padStart(2, '0');
     return y + '-' + m + '-' + d + ' ' + hh + ':' + mm + ":" + ss;
+})
+Vue.use(BaiduMap, {
+    /* Visit http://lbsyun.baidu.com/apiconsole/key for details about app key. */
+    ak: '9UQ6RzFBixcUaRUhhh7WT7pIKHHG1Ckq'
 })
 new Vue({
     router,

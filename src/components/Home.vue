@@ -104,6 +104,7 @@
             },
             initWebSocket() { //初始化weosocket
                 let token = window.sessionStorage.getItem("token");
+                // const wsuri = "ws://153g21o285.51mypc.cn:16795/webSocket/" + token;
                 const wsuri = "ws://localhost:8082/webSocket/" + token;
                 this.websock = new WebSocket(wsuri);
                 this.websock.onmessage = this.websocketonmessage;
@@ -125,6 +126,8 @@
                         showClose: true,
                         duration: 1000
                     })
+                } else if ("flash" == e.data) {
+                    this.getOnlineUsers();
                 } else {
                     this.$message({
                         message: e.data,

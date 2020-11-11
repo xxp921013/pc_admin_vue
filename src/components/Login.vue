@@ -2,7 +2,7 @@
     <div class="login_container">
         <div class="login_box">
             <div class="avatar_box">
-                <img src="../assets/logo.png" alt="" style="border-radius: 50%">
+                <img src="../assets/img/QQ图片20201012144710.jpg" alt="" style="border-radius: 50%">
             </div>
             <div class="form_box">
                 <el-form :model="form" :rules="rules" ref="loginBox">
